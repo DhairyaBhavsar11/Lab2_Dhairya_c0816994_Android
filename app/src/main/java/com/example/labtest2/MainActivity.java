@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         List<ProductModel> productModelList =databaseHelper.getAllProducts();
         datalist.setText("");
         for(ProductModel productModel : productModelList){
-            datalist.append("ID : "+ productModel.getId()+" | product_ID : "+ productModel.getproduct_id()+" | Product_Name : "+ productModel.getProduct_name()+" | Product_Price : "+ productModel.getProduct_price()+ " | Product_description : "+ productModel.getProduct_description()+" \n\n");
+            datalist.append("ID : "+ productModel.getId()+"\n" + "| product_ID : "+ productModel.getproduct_id()+"\n" + "| Product_Name : "+ productModel.getProduct_name()+"\n" + "| Product_Price : "+ productModel.getProduct_price()+"\n" + "| Product_description : "+ productModel.getProduct_description()+" \n\n");
         }
     }
 
@@ -202,6 +202,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void showsrchDataDialog(final String name) {
         ProductModel productModel =databaseHelper.getsrchProduct(name);
+        if (productModel == null){
+
+        }
         AlertDialog.Builder al=new AlertDialog.Builder(MainActivity.this);
         View view=getLayoutInflater().inflate(R.layout.update_dialog,null);
         final EditText productID=view.findViewById(R.id.productid);
