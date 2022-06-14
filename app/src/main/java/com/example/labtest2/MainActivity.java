@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Date;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         Button insert=findViewById(R.id.insert_data);
         Button update=findViewById(R.id.update_data);
         Button read=findViewById(R.id.refresh_data);
+        ImageButton search=findViewById(R.id.imageButton);
         datalist=findViewById(R.id.all_data_list);
         datalist_count=findViewById(R.id.data_list_count);
 
@@ -58,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 showDeleteDialog();
             }
+        });
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {showsearchDialog();}
         });
 
     }
@@ -111,6 +118,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void showsearchDialog() {
+        AlertDialog.Builder al=new AlertDialog.Builder(MainActivity.this);
+        View view=getLayoutInflater().inflate(R.layout.search_dialog,null);
+        al.setView(view);
+        final EditText name_input=view.findViewById(R.id.name_input);
+        Button fetch_btn=view.findViewById(R.id.search_id_btn);
+        final AlertDialog alertDialog=al.show();
+        fetch_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showsrchDataDialog(name_input.getText().toString());
+                alertDialog.dismiss();
+                refreshData();
+            }
+        });
+
+    }
+
     private void showDataDialog(final String id) {
         ProductModel productModel =databaseHelper.getProduct(Integer.parseInt(id));
         AlertDialog.Builder al=new AlertDialog.Builder(MainActivity.this);
@@ -144,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     private void ShowInputDialog() {
         AlertDialog.Builder al=new AlertDialog.Builder(MainActivity.this);
         View view=getLayoutInflater().inflate(R.layout.insert_dialog,null);
@@ -167,6 +194,39 @@ public class MainActivity extends AppCompatActivity {
                 Date date=new Date();
                 productModel.setCreated_at(""+date.getTime());
                 databaseHelper.AddProduct(productModel);
+                alertDialog.dismiss();
+                refreshData();
+            }
+        });
+    }
+
+    private void showsrchDataDialog(final String name) {
+        ProductModel productModel =databaseHelper.getsrchProduct(name);
+        AlertDialog.Builder al=new AlertDialog.Builder(MainActivity.this);
+        View view=getLayoutInflater().inflate(R.layout.update_dialog,null);
+        final EditText productID=view.findViewById(R.id.productid);
+        final EditText productName=view.findViewById(R.id.productname);
+        final EditText productDescription=view.findViewById(R.id.productdescription);
+        final EditText productPrice=view.findViewById(R.id.price);
+        Button update_btn=view.findViewById(R.id.update_btn);
+        al.setView(view);
+
+        productID.setText(productModel.getproduct_id());
+        productName.setText(productModel.getProduct_name());
+        productDescription.setText(productModel.getProduct_description());
+        productPrice.setText(productModel.getProduct_price());
+
+        final AlertDialog alertDialog=al.show();
+        update_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProductModel productModel =new ProductModel();
+                productModel.setproduct_id(productID.getText().toString());
+                productModel.setId(name);
+                productModel.setProduct_name(productName.getText().toString());
+                productModel.setProduct_description(productDescription.getText().toString());
+                productModel.setProduct_price(productPrice.getText().toString());
+                databaseHelper.updateProduct(productModel);
                 alertDialog.dismiss();
                 refreshData();
             }

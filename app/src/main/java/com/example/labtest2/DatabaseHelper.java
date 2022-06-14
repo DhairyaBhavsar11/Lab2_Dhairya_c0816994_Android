@@ -72,6 +72,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return productModel;
     }
+    public ProductModel getsrchProduct(String name){
+        SQLiteDatabase db=this.getReadableDatabase();
+        Cursor cursor=db.query(TABLE_NAME,new String[]{ID, product_id, product_name, product_description, product_price,created_at},product_name+" = ?",new String[]{String.valueOf(name)},null,null,null);
+        if(cursor!=null){
+            cursor.moveToFirst();
+        }
+        ProductModel productModel =new ProductModel(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5));
+        db.close();
+        return productModel;
+    }
 
     public List<ProductModel> getAllProducts(){
         List<ProductModel> productModelList =new ArrayList<>();
@@ -106,6 +116,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_NAME,ID+"=?",new String[]{id});
         db.close();
     }
+
+
 
     public int getTotalCount(){
         String query="SELECT * from "+TABLE_NAME;
